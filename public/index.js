@@ -25,19 +25,18 @@ function drawXbox() {
 
 
 function initCanvas() {
-  drawXbox()
 }
 
-function disconnectedContents(){
+function disconnectedContents() {
   xboxStart.style.display = "";
   xboxConnected.style.display = "none"
-  xboxTest.style.display="none"
+  xboxTest.style.display = "none"
 }
 
-function connectedContents(){
+function connectedContents() {
   xboxStart.style.display = "none";
   xboxConnected.style.display = ""
-  xboxTest.style.display=""
+  xboxTest.style.display = ""
 }
 
 function init() {
