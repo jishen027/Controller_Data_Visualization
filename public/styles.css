@@ -41,9 +41,15 @@ nav h1 div:last-child {
   justify-content: center;
 }
 
-.connected{
-  height: 800px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.connected {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.test {
+  text-align: center;
+}
+
+#xbox-img {
+  display: none;
 }
