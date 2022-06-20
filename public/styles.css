@@ -33,3 +33,17 @@ nav h1 div:first-child {
 nav h1 div:last-child {
   font-weight: 400;
 }
+
+.start {
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.connected{
+  height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
