@@ -28,3 +28,17 @@
 - Survey and analysis
 - Final dissertation
 
+
+### Abstract
+
+This project is for extends the quando with map gamepad controld to keyboard by using Quando inventor.
+
+enhanced game controls 
+
+Intent Communication
+-  the Game controls should communicate the player's intent in a way the palyer expects and create a feeling of full control.
+-  Signal Filtering (*)
+-  After the player sent the input signal, the system should process it, Here, we have a contradiction: players usually expect that the system should do _**approximately**_ what they want, but controller sends precise input to the system.
+
+
+
