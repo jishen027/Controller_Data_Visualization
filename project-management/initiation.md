@@ -5,8 +5,7 @@
   To Extending the Quando Visual Toolset for non-programmers with web based AI(TensorFlow.js)
 
   Desgin Game Controls
-  
-  ideas: map gamepad button to keyboard keys
+  filter the signal strength depends on time/speed.
   
   for example: mapping triger to keyboard W key, use the angle of the handle trigger press to represent the frequency of keyboard keys.
 
