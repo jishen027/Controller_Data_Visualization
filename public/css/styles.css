@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;800&family=VT323&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;800&family=VT323&display=swap");
 
 body {
   margin: 0;
@@ -35,7 +35,7 @@ nav h1 div:last-child {
 }
 
 .start {
-  height: 800px;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,6 +50,23 @@ nav h1 div:last-child {
   text-align: center;
 }
 
-#xbox-img {
-  /* display: none; */
+pre {
+  background: #555;
+  color: #5f5;
+  padding: 30px;
+}
+
+.keyboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.key {
+  border: 3px solid;
+  border-radius: 10px;
+  text-align: center;
+  background: #f7f7f7;
 }
