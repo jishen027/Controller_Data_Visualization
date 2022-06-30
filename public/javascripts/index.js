@@ -1,7 +1,8 @@
 const xboxStart = document.querySelector("#xbox-start");
 const xboxConnected = document.querySelector("#xbox-connected");
 const xboxTest = document.querySelector("#xbox-test");
-const gamepadDispaly = document.getElementById("gamepad-display");
+const gamepadDisplay = document.getElementById("gamepad-display");
+const keyboardDisplay = document.getElementById("keyboard-display");
 
 const chartDom = document.getElementById("graph");
 let myChart = echarts.init(chartDom)
@@ -9,18 +10,29 @@ let myChart = echarts.init(chartDom)
 const keyChartDom = document.getElementById("chart")
 let mykeyChart = echarts.init(keyChartDom)
 
+/** globle gamepad object */
 const gamepad = {
   id: 0,
   axis: [],
   buttons: [],
 };
 
+const keyW = {
+  id: 0,
+  interval: 0,
+  ispressed: 0,
+}
+
+let counter = 0;
+
+/** hide element when gamepad is disconnected */
 function disconnectedContents() {
   xboxStart.style.display = "";
   xboxConnected.style.display = "none";
   xboxTest.style.display = "none";
 }
 
+/** show element when gamepad is connected */
 function connectedContents() {
   xboxStart.style.display = "none";
   xboxConnected.style.display = "";
@@ -32,6 +44,8 @@ function init() {
 }
 window.onload = init();
 
+
+/** event listener for gamepad connect */
 window.addEventListener("gamepadconnected", () => {
   connectedContents();
   window.requestAnimationFrame(gameLoop);
@@ -39,10 +53,12 @@ window.addEventListener("gamepadconnected", () => {
   updateKeyGraph()
 });
 
+/** event listener for gamepad disconnect */
 window.addEventListener("gamepaddisconnected", () => {
   disconnectedContents();
 });
 
+/** event listener for keydown */
 window.addEventListener("keydown", (e) => {
   if (e.key === "w") {
     const KeyW = document.getElementById("key-w");
@@ -50,6 +66,7 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
+/** event listener for keyup */
 window.addEventListener("keyup", (e) => {
   if (e.key === "w") {
     const KeyW = document.getElementById("key-w");
@@ -57,8 +74,7 @@ window.addEventListener("keyup", (e) => {
   }
 });
 
-
-
+/** game loop for check gamepad status */
 function gameLoop() {
   const gamepads = navigator.getGamepads();
   if (gamepads[0]) {
@@ -89,14 +105,53 @@ function gameLoop() {
         { button_15: gamepads[0].buttons[15].pressed },
       ],
     };
+
+    const keyboardState = {
+      id: "w key",
+      ispressed: 0,
+      frequancy: parseInt(triggerDataTransfer(gamepads[0].buttons[7].value.toFixed(2))),
+    }
     gamepad.id = gamepadState.id;
     gamepad.axis = gamepadState.axis;
     gamepad.buttons = gamepadState.buttons;
-    gamepadDispaly.textContent = JSON.stringify(gamepadState, null, 2);
+    gamepadDisplay.textContent = JSON.stringify(gamepadState, null, 2);
+
+
+    const indicator = parseInt(triggerDataTransfer(gamepads[0].buttons[7].value.toFixed(2)));
+    console.log("counter:", counter)
+
+    if(counter > 100){
+      counter = 0
+    }
+
+    if (indicator === 100) {
+      keyboardState.ispressed = 0;
+      keyW.ispressed = 0;
+      counter = 0
+    } else if (indicator === 0) {
+      keyboardState.ispressed = 1;
+      keyW.ispressed = 1;
+      counter = 0
+    } else {
+      if (counter === indicator) {
+        console.log("button pressed")
+        keyboardState.ispressed = 1;
+        keyW.ispressed = 1;
+        counter = 0;
+      } else {
+        keyboardState.ispressed = 0;
+        keyW.ispressed = 0;
+        counter = counter + 1;
+      }
+    }
+
+    keyboardDisplay.textContent = JSON.stringify(keyboardState, null, 2)
+
   }
   window.requestAnimationFrame(gameLoop);
 }
 
+/**  dispatch key event  */
 function pressedKeyW() {
   window.dispatchEvent(
     new KeyboardEvent("keydown", {
@@ -111,15 +166,15 @@ function pressedKeyW() {
   );
 }
 
-// data transfer
+/** data conversion */
 function triggerDataTransfer(origin) {
   let percentage = 1 - (origin / 1);
-  let processedData = 5000 * percentage;
+  let processedData = 100 * percentage;
 
   return processedData;
 }
 
-
+/** frequancy of press keyboard */
 function pressFrequency(data) {
   setInterval(() => {
     pressedKeyW();
@@ -133,16 +188,11 @@ let keyNow = 0;
 
 let keyOption;
 
-
-
 function addKeyData() {
-
-  let transferedKeyData = triggerDataTransfer(gamepad.buttons[7].button_7)
-
+  keyData.push(keyW.ispressed)
   keyTime.push(keyNow)
-  keyData.push(transferedKeyData)
 
-  if (keyTime.length > 15) {
+  if (keyTime.length > 50) {
     keyTime.shift()
     keyData.shift()
   }
@@ -188,7 +238,7 @@ function updateKeyGraph() {
         }
       ]
     });
-  }, 500);
+  }, 10);
 }
 
 keyOption && mykeyChart.setOption(keyOption);
@@ -205,7 +255,7 @@ let option;
 function addData() {
   time.push(now)
   data.push(gamepad.buttons[7].button_7)
-  if (time.length > 15) {
+  if (time.length > 50) {
     data.shift()
     time.shift()
   }
@@ -237,7 +287,6 @@ option = {
   ]
 };
 
-
 function startGraph() {
   setInterval(() => {
     addData();
@@ -253,7 +302,7 @@ function startGraph() {
         }
       ]
     });
-  }, 500);
+  }, 100);
 }
 
 option && myChart.setOption(option);
