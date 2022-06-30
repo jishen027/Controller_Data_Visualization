@@ -44,13 +44,11 @@ function init() {
 }
 window.onload = init();
 
-
 /** event listener for gamepad connect */
 window.addEventListener("gamepadconnected", () => {
   connectedContents();
   window.requestAnimationFrame(gameLoop);
   startGraph()
-  updateKeyGraph()
 });
 
 /** event listener for gamepad disconnect */
@@ -120,11 +118,11 @@ function gameLoop() {
     const indicator = parseInt(triggerDataTransfer(gamepads[0].buttons[7].value.toFixed(2)));
     console.log("counter:", counter)
 
-    if(counter > 100){
+    if (counter > 50) {
       counter = 0
     }
 
-    if (indicator === 100) {
+    if (indicator === 50) {
       keyboardState.ispressed = 0;
       keyW.ispressed = 0;
       counter = 0
@@ -143,6 +141,14 @@ function gameLoop() {
         keyW.ispressed = 0;
         counter = counter + 1;
       }
+    }
+
+    if (keyW.ispressed === 1) {
+      const KeyW = document.getElementById("key-w");
+      KeyW.style.background = "#555";
+    } else {
+      const KeyW = document.getElementById("key-w");
+      KeyW.style.background = "#f7f7f7";
     }
 
     keyboardDisplay.textContent = JSON.stringify(keyboardState, null, 2)
@@ -169,7 +175,7 @@ function pressedKeyW() {
 /** data conversion */
 function triggerDataTransfer(origin) {
   let percentage = 1 - (origin / 1);
-  let processedData = 100 * percentage;
+  let processedData = 50 * percentage;
 
   return processedData;
 }
@@ -192,7 +198,7 @@ function addKeyData() {
   keyData.push(keyW.ispressed)
   keyTime.push(keyNow)
 
-  if (keyTime.length > 50) {
+  if (keyTime.length > 100) {
     keyTime.shift()
     keyData.shift()
   }
@@ -224,22 +230,6 @@ keyOption = {
   ]
 };
 
-function updateKeyGraph() {
-  setInterval(() => {
-    addKeyData();
-    mykeyChart.setOption({
-      xAxis: {
-        data: keyTime
-      },
-      series: [
-        {
-          name: '成交',
-          data: keyData
-        }
-      ]
-    });
-  }, 10);
-}
 
 keyOption && mykeyChart.setOption(keyOption);
 
@@ -255,7 +245,7 @@ let option;
 function addData() {
   time.push(now)
   data.push(gamepad.buttons[7].button_7)
-  if (time.length > 50) {
+  if (time.length > 100) {
     data.shift()
     time.shift()
   }
@@ -290,6 +280,7 @@ option = {
 function startGraph() {
   setInterval(() => {
     addData();
+    addKeyData();
 
     myChart.setOption({
       xAxis: {
@@ -301,8 +292,21 @@ function startGraph() {
           data: data
         }
       ]
-    });
-  }, 100);
+    })
+
+    mykeyChart.setOption({
+      xAxis: {
+        data: keyTime
+      },
+      series: [
+        {
+          name: '成交',
+          data: keyData
+        }
+      ]
+    })
+
+  }, 17);
 }
 
 option && myChart.setOption(option);
